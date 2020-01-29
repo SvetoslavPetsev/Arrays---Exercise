@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Linq;
 
-namespace _05._Top_Integers
+namespace _09.KaminoFactory
 {
     class Program
     {
-        static void Main()
+        static void Main(string[] args)
         {
             int range = int.Parse(Console.ReadLine());
 
@@ -21,10 +21,22 @@ namespace _05._Top_Integers
             while (input != "Clone them!")
             {
                 counterDnkTest++;
-                int[] dnkInput = input
-               .Split("!")
-               .Select(int.Parse)
-               .ToArray();
+                string modyfyInput = "";
+                for (int i = 0; i < input.Length; i++)
+                {
+                    if (input[i] != '!')
+                    {
+                        modyfyInput += input[i];
+                    }
+                }
+
+                int[] dnkInput = new int[range];
+
+                for (int i = 0; i < range; i++)
+                {
+                    string a = modyfyInput[i].ToString();
+                    dnkInput[i] = int.Parse(a);
+                }
 
                 int sumOnes = 0;
                 int counterSeq = 0;
@@ -43,7 +55,6 @@ namespace _05._Top_Integers
                             maxArraySeq = counterSeq;
                             indexSeg = i + 1 - counterSeq;
                         }
-                        continue;
                     }
                     else
                     {
