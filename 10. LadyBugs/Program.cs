@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 
 namespace _10._LadyBugs
@@ -8,79 +8,95 @@ namespace _10._LadyBugs
         static void Main(string[] args)
         {
             int sizeOfField = int.Parse(Console.ReadLine());
+
             int[] startPlace = Console
                 .ReadLine()
                 .Split(" ")
                 .Select(int.Parse)
                 .ToArray();
-            string input = Console.ReadLine();
 
-            int[] bugsOnField = new int[sizeOfField];
+            int[] bugsOnField = GetFieldAndBugsStartPoint(sizeOfField, startPlace);
 
-            for (int i = 0; i < bugsOnField.Length; i++)
+            while (true)
             {
-                for (int j = 0; j < startPlace.Length; j++)
+                string input = Console.ReadLine();
+
+                if (input == "end")
                 {
-                    if (Math.Abs(startPlace[j]) == i)
-                    {
-                        bugsOnField[i] = 1;
-                        break;
-                    }
-                    else
-                    {
-                        bugsOnField[i] = 0;
-                    }
+                    break;
                 }
-            }
-            while (input != "end")
-            {
+
                 string[] command = input
                     .Split(" ")
                     .ToArray();
-                int currentPosition = Convert.ToInt32(command[0]);
-                string direction = command[1];
-                int moveLenght = Convert.ToInt32(command[2]);
 
-                if (bugsOnField[currentPosition] == 1 && moveLenght != 0)
+                int currentPosition = int.Parse(command[0]);
+
+                string direction = command[1];
+
+                int moveLenght = int.Parse(command[2]);
+
+                if (currentPosition < 0 || currentPosition > bugsOnField.Length - 1)
                 {
-                    if (direction == "right")
+                    continue;
+                }
+
+                else if (bugsOnField[currentPosition] == 1)
+                {
+                    int indexdirection = GetDirection(direction);
+
+                    int newPosition = currentPosition + (moveLenght * indexdirection);
+
+                    bugsOnField[currentPosition] = 0;
+
+                    while (newPosition >= 0 && newPosition <= bugsOnField.Length - 1)
                     {
-                        int newRightPosition = currentPosition + moveLenght;
-                        bugsOnField[currentPosition] = 0;
-                        while (newRightPosition >= 0 && newRightPosition < bugsOnField.Length)
+
+                        if (bugsOnField[newPosition] == 0)
                         {
-                            if (bugsOnField[newRightPosition] == 0)
-                            {
-                                bugsOnField[newRightPosition] = 1;
-                                break;
-                            }
-                            else
-                            {
-                                newRightPosition += moveLenght;
-                            }
+                            bugsOnField[newPosition] = 1;
+                            break;
                         }
-                    }
-                    else if (direction == "left")
-                    {
-                        int newLeftPosition = currentPosition - moveLenght;
-                        bugsOnField[currentPosition] = 0;
-                        while (newLeftPosition >= 0 && newLeftPosition < bugsOnField.Length)
+                        else
                         {
-                            if (bugsOnField[newLeftPosition] == 0)
-                            {
-                                bugsOnField[newLeftPosition] = 1;
-                                break;
-                            }
-                            else
-                            {
-                                newLeftPosition -= moveLenght;
-                            }
+                            newPosition += moveLenght * indexdirection;
                         }
                     }
                 }
-                input = Console.ReadLine();
             }
-            Console.WriteLine(string.Join(' ', bugsOnField));
+            Console.WriteLine(string.Join(" ", bugsOnField));
+        }
+
+        private static int GetDirection(string direction)
+        {
+            int indexDirection = 1;
+            if (direction == "left")
+            {
+                indexDirection = -1;
+            }
+            return indexDirection;
+        }
+
+        private static int[] GetFieldAndBugsStartPoint(int sizeOfField, int[] startPlace)
+        {
+            int[] bugsOnField = new int[sizeOfField];
+
+            for (int i = 0; i < startPlace.Length; i++)
+            {
+                int currentposition = startPlace[i];
+
+                for (int j = 0; j < bugsOnField.Length; j++)
+                {
+                    int positionOnField = j;
+
+                    if (currentposition == positionOnField)
+                    {
+                        bugsOnField[j] = 1;
+                        break;
+                    }
+                }
+            }
+            return bugsOnField;
         }
     }
 }
